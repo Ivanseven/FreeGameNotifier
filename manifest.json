@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Free Games Notification",
+  "description": "An unofficial extension to check updates from reddit.com/r/FreeGameFindings",
+  "version": "1.0",
+  "action": {
+    "default_popup": "menupanel.html",
+    "default_icon": "free-games-icon.png"
+  },
+  "permissions": ["storage", "alarms"],
+  "host_permissions": ["https://extension-tips.glitch.me/*","https://www.reddit.com/r/FreeGameFindings/*"],
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  }
+}

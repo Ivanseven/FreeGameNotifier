@@ -1,0 +1,44 @@
+.peach-bg {
+    background:peachpuff;
+  }
+
+  .grey-bg {
+    background:#ccc;
+  }
+
+  .card {
+    padding:0.3rem;
+    border-bottom: 0.4rem solid #6E2C00;
+    border-right: 0.4rem solid #6E2C00;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .btn {
+    padding: 0.1rem;
+    border-bottom: 0.4rem solid #6E2C00;
+    border-right: 0.4rem solid #6E2C00;
+    border-radius: 1rem;
+    text-align: center;
+    font-size: medium;
+  }
+.list-item {
+  border-width: medium;
+  border: solid #ccc;
+  border-radius: 1rem;
+  padding: 0.3rem;
+  text-align: center;
+  height: 3rem;
+  margin-bottom: 0.3rem;
+  margin: 1rem 2rem;
+  background-color: orangered;
+  color: white;    
+  /*width: min-content*/
+}
+
+.list-item span {
+  margin: 1rem;
+  text-align: center;
+  height: -3rem;
+  line-height: 1rem;
+}
