@@ -3,12 +3,20 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === 'install') {
     // Save to browser storage
     chrome.storage.local.set({
-      apiSuggestions: ['tabs', 'storage', 'scripting']
+      lastClaimedDateStorageKey: null
     });
   }
 });
 
 export const lastClaimedDateStorageKey = "lastClaimedDate"
+
+export const updateLastClaimedDate = () => {
+  const now = new Date().toUTCString() // Storage can't seem to store Date
+  // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
+  const storageObj = {}
+  storageObj[lastClaimedDateStorageKey] = now
+  chrome.storage.local.set(storageObj)
+}
 
 export const getLatestFreeGamesFindingsData = async () => {
   // https://www.reddit.com/r/FreeGameFindings/new.json?limit=none
@@ -55,10 +63,6 @@ export const getLatestFreeGamesFindingsData = async () => {
     }
   })
 
-  const now = new Date().toUTCString() // Storage can't seem to store Date
-  const storageObj = {}
-  storageObj[lastClaimedDateStorageKey] = now
-  chrome.storage.local.set(storageObj)
   return chrome.storage.local.set({ freeGamesData: response })
 };
 
@@ -79,16 +83,15 @@ async function createNewGameAlarm() {
 
 createNewGameAlarm();
 
-// Update tip once a day
+// Update games on alarm
 chrome.alarms.onAlarm.addListener(getLatestFreeGamesFindingsData);
 
-
 // Watch storage changes:
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    console.log(
-      `Storage key "${key}" in namespace "${namespace}" changed.`,
-      `Old value was "${oldValue}", new value is "${newValue}".`
-    );
-  }
-});
+// chrome.storage.onChanged.addListener((changes, namespace) => {
+//   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+//     console.log(
+//       `Storage key "${key}" in namespace "${namespace}" changed.`,
+//       `Old value was "${oldValue}", new value is "${newValue}".`
+//     );
+//   }
+// });

@@ -10,7 +10,7 @@
   "permissions": ["storage", "alarms"],
   "host_permissions": ["https://www.reddit.com/r/FreeGameFindings/*"],
   "background": {
-    "service_worker": "service-worker.js",
+    "service_worker": "./scripts/service-worker.js",
     "type": "module"
   }
 }
