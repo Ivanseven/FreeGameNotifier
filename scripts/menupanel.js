@@ -13,7 +13,7 @@ function updateLastClaimDate () {
 
 document.querySelector("#refreshButton").addEventListener("click", ()=>{
     getLatestFreeGamesFindingsData()
-    chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
+    chrome.storage.local.get([lastClaimedDateStorageKey]).then(() => {
         updateLastClaimDate()
     });
 })

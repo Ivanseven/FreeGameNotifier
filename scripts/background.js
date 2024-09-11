@@ -40,7 +40,7 @@ export const getLatestFreeGamesFindingsData = async () => {
     // for (let entry of entries) {
       // const d = new Date(0); // Sets the date to the epoch
       // d.setUTCSeconds(entry.data.created_utc);
-      // to check date
+      // To debug entry date
     // }
 
     if (newGamesCount > 0) {
