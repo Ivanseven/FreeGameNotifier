@@ -1,8 +1,8 @@
-import { getLatestFreeGamesFindingsData } from "./background.js"
+import { getLatestFreeGamesFindingsData, lastClaimedDateStorageKey } from "./background.js"
 
 function updateLastClaimDate () {
-    let lastClaimedDateText = "..."
-    chrome.storage.local.get(["lastClaimedDate"]).then((result) => {
+    let lastClaimedDateText = "-"
+    chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
         if (result.lastClaimedDate) {
             lastClaimedDateText = result.lastClaimedDate;
         }
@@ -13,11 +13,10 @@ function updateLastClaimDate () {
 
 document.querySelector("#refreshButton").addEventListener("click", ()=>{
     getLatestFreeGamesFindingsData()
-    chrome.storage.local.get(["lastClaimedDate"]).then((result) => {
+    chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
         updateLastClaimDate()
     });
 })
 
-getLatestFreeGamesFindingsData()
 updateLastClaimDate()
 

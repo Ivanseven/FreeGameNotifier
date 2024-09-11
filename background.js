@@ -8,62 +8,63 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   }
 });
 
-const updateTip = async () => {
-  const response = await fetch('https://extension-tips.glitch.me/tips.json');
-  const tips = await response.json();
-  const randomIndex = Math.floor(Math.random() * tips.length);
-  console.log("tip of day", tips[randomIndex])
-  return chrome.storage.local.set({ tip: tips[randomIndex] });
-};
+export const lastClaimedDateStorageKey = "lastClaimedDate"
 
 export const getLatestFreeGamesFindingsData = async () => {
   // https://www.reddit.com/r/FreeGameFindings/new.json?limit=none
   const response = await fetch('https://www.reddit.com/r/FreeGameFindings/new.json?limit=50');
   let newGamesCount = 0
 
-  // console.log("reddit res", response);
-  // console.log("reddit body", response.body);
-  // const redditHTML = await response.text();
-  // console.log("reddit text", redditHTML);
+  const lastClaimedDateSinceEpoch = await chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
+    if (result.lastClaimedDate) {
+      let lastClaimedDateParsed = new Date(Date.parse(result.lastClaimedDate));
+      return Math.round(lastClaimedDateParsed.getTime() / 1000);
+    }
+    return null
+  });
 
-  // Game Names
   response.json().then((json)=>{
     let entries = json.data.children
     entries = entries.filter((item)=>{
-      return item.data.link_flair_text != "Expired"
+      // Filter out old/expired/etc games
+      if (lastClaimedDateSinceEpoch < item.data.created_utc) {
+        const includeGame = item.data.link_flair_text != "Expired"
+        if (includeGame) {
+          newGamesCount += 1
+         return includeGame
+        }
+      }
     })
    
 
-    for (let entry of entries) {
-      const d = new Date(0); // Sets the date to the epoch
-      d.setUTCSeconds(entry.data.created_utc);
-      // console.log(d, "->",entry.data.title)
-      newGamesCount += 1
+    // for (let entry of entries) {
+      // const d = new Date(0); // Sets the date to the epoch
+      // d.setUTCSeconds(entry.data.created_utc);
+      // to check date
+    // }
+
+    if (newGamesCount > 0) {
+      chrome.action.setBadgeBackgroundColor({color: 'green'})
+      chrome.action.setBadgeText({
+        text:`${newGamesCount}`
+      })
+    } else {
+      chrome.action.setBadgeText({
+        text:""
+      })
     }
-
-    console.log(entries, entries.length)
-
-    console.log("newGamesCount", newGamesCount)
-    chrome.action.setBadgeBackgroundColor({color: 'green'})
-    chrome.action.setBadgeText({
-      text:`${newGamesCount}`
-    })
   })
 
-  const now = new Date().toDateString() // Storage can't seem to store Date
-  chrome.storage.local.set({ "lastClaimedDate": now }).then(()=>{
-    console.log("getLatestFreeGamesFindingsData set?", now)
-
-    chrome.storage.local.get(["lastClaimedDate"]).then((result) => {
-      console.log("getLatestFreeGamesFindingsData... get", result)
-    });
-  })
+  const now = new Date().toUTCString() // Storage can't seem to store Date
+  const storageObj = {}
+  storageObj[lastClaimedDateStorageKey] = now
+  chrome.storage.local.set(storageObj)
   return chrome.storage.local.set({ freeGamesData: response })
 };
 
 const ALARM_NAME = 'newgame';
 
-async function createAlarm() {
+async function createNewGameAlarm() {
   // Singleton Alarm
   const alarm = await chrome.alarms.get(ALARM_NAME);
   if (typeof alarm === 'undefined') {
@@ -72,17 +73,11 @@ async function createAlarm() {
       periodInMinutes: 1
     });
 
-    // updateTip();
     getLatestFreeGamesFindingsData();
   }
 }
 
-async function clearAlarm(name) {
-  chrome.alarms.clear(name);
-}
-
-createAlarm();
-// clearAlarm(ALARM_NAME);
+createNewGameAlarm();
 
 // Update tip once a day
 chrome.alarms.onAlarm.addListener(getLatestFreeGamesFindingsData);
