@@ -16,12 +16,13 @@ const updateTip = async () => {
   return chrome.storage.local.set({ tip: tips[randomIndex] });
 };
 
-const getLatestFreeGamesFindingsData = async () => {
+export const getLatestFreeGamesFindingsData = async () => {
   // https://www.reddit.com/r/FreeGameFindings/new.json?limit=none
   const response = await fetch('https://www.reddit.com/r/FreeGameFindings/new.json?limit=50');
-  
-  console.log("reddit res", response);
-  console.log("reddit body", response.body);
+  let newGamesCount = 0
+
+  // console.log("reddit res", response);
+  // console.log("reddit body", response.body);
   // const redditHTML = await response.text();
   // console.log("reddit text", redditHTML);
 
@@ -36,17 +37,34 @@ const getLatestFreeGamesFindingsData = async () => {
     for (let entry of entries) {
       const d = new Date(0); // Sets the date to the epoch
       d.setUTCSeconds(entry.data.created_utc);
-      console.log(d, "->",entry.data.title)
+      // console.log(d, "->",entry.data.title)
+      newGamesCount += 1
     }
+
     console.log(entries, entries.length)
+
+    console.log("newGamesCount", newGamesCount)
+    chrome.action.setBadgeBackgroundColor({color: 'green'})
+    chrome.action.setBadgeText({
+      text:`${newGamesCount}`
+    })
   })
 
+  const now = new Date().toDateString() // Storage can't seem to store Date
+  chrome.storage.local.set({ "lastClaimedDate": now }).then(()=>{
+    console.log("getLatestFreeGamesFindingsData set?", now)
+
+    chrome.storage.local.get(["lastClaimedDate"]).then((result) => {
+      console.log("getLatestFreeGamesFindingsData... get", result)
+    });
+  })
   return chrome.storage.local.set({ freeGamesData: response })
 };
 
-const ALARM_NAME = 'tip';
+const ALARM_NAME = 'newgame';
 
 async function createAlarm() {
+  // Singleton Alarm
   const alarm = await chrome.alarms.get(ALARM_NAME);
   if (typeof alarm === 'undefined') {
     chrome.alarms.create(ALARM_NAME, {
@@ -54,7 +72,7 @@ async function createAlarm() {
       periodInMinutes: 1
     });
 
-    updateTip();
+    // updateTip();
     getLatestFreeGamesFindingsData();
   }
 }
@@ -64,7 +82,18 @@ async function clearAlarm(name) {
 }
 
 createAlarm();
-clearAlarm(ALARM_NAME);
+// clearAlarm(ALARM_NAME);
 
 // Update tip once a day
-chrome.alarms.onAlarm.addListener(updateTip);
+chrome.alarms.onAlarm.addListener(getLatestFreeGamesFindingsData);
+
+
+// Watch storage changes:
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    console.log(
+      `Storage key "${key}" in namespace "${namespace}" changed.`,
+      `Old value was "${oldValue}", new value is "${newValue}".`
+    );
+  }
+});

@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Title</title>
-        <link rel="stylesheet" href="css/styles.css">
-        
-    </head>
-    <body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
     <ul style="list-style: none">
+      <a
+        href="https://www.reddit.com/r/FreeGameFindings/new/"
+        target="_blank"
+        style="color: white; text-decoration: none"
+      >
         <li class="list-item">
-            <a href="https://www.reddit.com/r/FreeGameFindings/new/" target="_blank" style="color:white;text-decoration: none;">
-            <img src="free-games-icon.png" width="25px"/>
-            <span>Reddit</span>
-            </a>
+          <img src="free-games-icon.png" width="25px" />
+          <span>Reddit</span>
         </li>
+      </a>
+      <a href="#" id="refreshButton">
         <li class="list-item">
-            <img src="icons/refresh.svg" />
-            <span>Refresh</span>
+          <!-- <img src="icons/refresh.svg" /> -->
+          <span>Last Claimed: </span><span id="lastClaimedText">-</span>
         </li>
-        <li class="list-item">
-            <img src="icons/settings.svg" />
-            <span>Settings</span>
-        </li>
-        <!-- <li class="list-item">
+      </a>
+      <li class="list-item">
+        <img src="icons/settings.svg" />
+        <span>Settings</span>
+      </li>
+      <!-- <li class="list-item">
             <img src="icons/info.svg" />
             <span>About</span>
         </li> -->
     </ul>
-    </body>
+    <script type="module" src="menupanel.js"></script>
+  </body>
 </html>
