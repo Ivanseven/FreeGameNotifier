@@ -3,18 +3,28 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === 'install') {
     // Save to browser storage
     chrome.storage.local.set({
-      lastClaimedDateStorageKey: null
+      lastClaimedDate: null,
+      lastRefreshedDate: null
     });
   }
 });
 
 export const lastClaimedDateStorageKey = "lastClaimedDate"
+export const lastRefreshedDateStorageKey = "lastRefreshedDate"
 
 export const updateLastClaimedDate = () => {
   const now = new Date().toUTCString() // Storage can't seem to store Date
   // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
   const storageObj = {}
   storageObj[lastClaimedDateStorageKey] = now
+  chrome.storage.local.set(storageObj)
+}
+
+const updateLastRefreshedDate = () => {
+  const now = new Date().toUTCString() // Storage can't seem to store Date
+  // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
+  const storageObj = {}
+  storageObj[lastRefreshedDateStorageKey] = now
   chrome.storage.local.set(storageObj)
 }
 
@@ -30,6 +40,7 @@ export const getLatestFreeGamesFindingsData = async () => {
     }
     return null
   });
+
 
   response.json().then((json)=>{
     let entries = json.data.children
@@ -61,6 +72,8 @@ export const getLatestFreeGamesFindingsData = async () => {
         text:""
       })
     }
+  }).then(()=>{
+    updateLastRefreshedDate()
   })
 
   return chrome.storage.local.set({ freeGamesData: response })

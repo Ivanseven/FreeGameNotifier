@@ -30,7 +30,8 @@
   text-align: center;
   height: 3rem;
   margin-bottom: 0.3rem;
-  margin: 1rem 2rem;
+  /* Fix Button clickable zone was bigger than button */
+  /* margin: 1rem 2rem; */
   background-color: orangered;
   color: white;    
   /*width: min-content*/
@@ -41,4 +42,28 @@
   text-align: center;
   height: -3rem;
   line-height: 1rem;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.animate-rotate {
+  animation-name: rotation;
+  animation-duration: 4s;
+  animation-iteration-count: 0;
+}
+
+.animate-once {
+  animation-iteration-count: 1;
+}
+
+.animate-infinite {
+  animation-iteration-count: infinite;
 }

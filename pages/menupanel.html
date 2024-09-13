@@ -17,19 +17,58 @@
           <span>Reddit</span>
         </li>
       </a>
-      <a href="#" id="refreshButton">
+
+      <a
+        href="#"
+        id="instaClaimButton"
+        style="color: white; text-decoration: none"
+      >
         <li class="list-item">
           <img src="../icons/refresh.svg" />
+          <!-- <span>Instant Claim Pending</span> -->
+          <span>Instant Claim Done</span>
+        </li>
+      </a>
+
+      <a
+        href="#"
+        id="refreshButton"
+        style="color: white; text-decoration: none"
+      >
+        <li class="list-item">
+          <img
+            id="refreshIcon"
+            src="../icons/refresh.svg"
+            class="animate-rotate"
+          />
+          <span>Refresh</span>
+        </li>
+      </a>
+
+      <a
+        href="#"
+        id="claimedButton"
+        style="color: white; text-decoration: none"
+      >
+        <li class="list-item">
+          <img src="../icons/check.svg" />
           <span>Claimed</span>
         </li>
       </a>
+
       <!-- <li class="list-item">
         <img src="icons/settings.svg" />
         <span>Settings</span>
       </li> -->
     </ul>
+    <p>Last Refreshed:</p>
+    <p id="lastRefreshedText">-</p>
     <p>Last Claimed:</p>
     <p id="lastClaimedText">-</p>
+    <!-- Move to About Page -->
+    <!-- This app retrieves data from various gaming platforms and services, and is
+    not affiliated with or endorsed by them. All data is provided "as is", and
+    we assume no responsibility for its accuracy. -->
     <script type="module" src="../scripts/menupanel.js"></script>
   </body>
 </html>
