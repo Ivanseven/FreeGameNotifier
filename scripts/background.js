@@ -87,7 +87,7 @@ async function createNewGameAlarm() {
   if (typeof alarm === 'undefined') {
     chrome.alarms.create(ALARM_NAME, {
       delayInMinutes: 1,
-      periodInMinutes: 1
+      periodInMinutes: 120
     });
 
     getLatestFreeGamesFindingsData();
