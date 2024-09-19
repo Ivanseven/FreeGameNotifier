@@ -30,6 +30,9 @@ document.querySelector("#claimedButton").addEventListener("click", ()=>{
         updateLastClaimedDate()
     }).then(()=>{
         updateLastClaimDateText()
+        chrome.action.setBadgeText({
+            text:""
+        })
     });
 })
 
