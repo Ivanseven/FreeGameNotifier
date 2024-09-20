@@ -3,28 +3,33 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === 'install') {
     // Save to browser storage
     chrome.storage.local.set({
-      lastClaimedDate: null,
-      lastRefreshedDate: null
+      lastClaimedEpochSecs: 0,
+      lastRefreshedEpochSecs: 0
     });
   }
 });
 
-export const lastClaimedDateStorageKey = "lastClaimedDate"
-export const lastRefreshedDateStorageKey = "lastRefreshedDate"
+export const lastClaimedDateStorageKey = "lastClaimedEpochSecs"
+export const lastRefreshedDateStorageKey = "lastRefreshedEpochSecs"
+
+const getEpochSecondsNow = () => {
+  const d = new Date();
+  const seconds = d.getTime() / 1000;
+  return seconds
+}
 
 export const updateLastClaimedDate = () => {
-  const now = new Date().toUTCString() // Storage can't seem to store Date
-  // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
+  // const now = new Date().toUTCString() // Storage can't seem to store Date
   const storageObj = {}
-  storageObj[lastClaimedDateStorageKey] = now
+  storageObj[lastClaimedDateStorageKey] = getEpochSecondsNow()
   chrome.storage.local.set(storageObj)
 }
 
 const updateLastRefreshedDate = () => {
-  const now = new Date().toUTCString() // Storage can't seem to store Date
+  // const now = new Date().toUTCString() // Storage can't seem to store Date
   // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
   const storageObj = {}
-  storageObj[lastRefreshedDateStorageKey] = now
+  storageObj[lastRefreshedDateStorageKey] = getEpochSecondsNow()
   chrome.storage.local.set(storageObj)
 }
 
@@ -34,11 +39,7 @@ export const getLatestFreeGamesFindingsData = async () => {
   let newGamesCount = 0
 
   const lastClaimedDateSinceEpoch = await chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
-    if (result.lastClaimedDate) {
-      let lastClaimedDateParsed = new Date(Date.parse(result.lastClaimedDate));
-      return Math.round(lastClaimedDateParsed.getTime() / 1000);
-    }
-    return null
+    return result.lastClaimedEpochSecs
   });
 
 

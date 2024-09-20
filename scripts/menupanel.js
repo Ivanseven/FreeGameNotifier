@@ -1,12 +1,20 @@
 import { getLatestFreeGamesFindingsData, lastRefreshedDateStorageKey, lastClaimedDateStorageKey, updateLastClaimedDate } from "./background.js"
 
+function epochSecsToDate (epochSeconds) {
+    return Date(epochSeconds);
+}
+
+function dateToLocale(date){
+    return date.toLocaleString()
+}
+
 function updateLastClaimDateText () {
     let lastClaimedDateText = "-"
     chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
         console.log("claimed", result)
 
-        if (result.lastClaimedDate) {
-            lastClaimedDateText = result.lastClaimedDate;
+        if (result.lastClaimedEpochSecs > 0) {
+            lastClaimedDateText = dateToLocale(epochSecsToDate(result.lastClaimedEpochSecs));
         }
         document.querySelector("#lastClaimedText").innerText = lastClaimedDateText
     });
@@ -17,8 +25,8 @@ function updateLastRefreshedDateText() {
     let lastRefreshedDateText = "-"
     chrome.storage.local.get([lastRefreshedDateStorageKey]).then((result) => {
         console.log("refresh", result)
-        if (result.lastRefreshedDate) {
-            lastRefreshedDateText = result.lastRefreshedDate;
+        if (result.lastRefreshedEpochSecs > 0) {
+            lastRefreshedDateText = dateToLocale(epochSecsToDate(result.lastRefreshedEpochSecs));
         }
         document.querySelector("#lastRefreshedText").innerText = lastRefreshedDateText
     });
