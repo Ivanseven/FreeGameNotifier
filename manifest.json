@@ -7,6 +7,10 @@
     "default_popup": "./pages/menupanel.html",
     "default_icon": "./icons/free-games-icon.png"
   },
+  "options_ui": {
+    "page": "pages/settings.html",
+    "open_in_tab": false
+  },
   "permissions": ["storage", "alarms"],
   "host_permissions": ["https://www.reddit.com/r/FreeGameFindings/*"],
   "background": {
