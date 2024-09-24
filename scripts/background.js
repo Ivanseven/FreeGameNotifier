@@ -2,10 +2,11 @@
 chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === 'install') {
     // Save to browser storage
-    chrome.storage.local.set({
+    chrome.storage.sync.set({
       lastClaimedEpochSecs: 0,
       lastRefreshedEpochSecs: 0
     });
+
   }
 });
 
@@ -22,7 +23,7 @@ export const updateLastClaimedDate = () => {
   // const now = new Date().toUTCString() // Storage can't seem to store Date
   const storageObj = {}
   storageObj[lastClaimedDateStorageKey] = getEpochSecondsNow()
-  chrome.storage.local.set(storageObj)
+  chrome.storage.sync.set(storageObj)
 }
 
 const updateLastRefreshedDate = () => {
@@ -30,7 +31,7 @@ const updateLastRefreshedDate = () => {
   // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
   const storageObj = {}
   storageObj[lastRefreshedDateStorageKey] = getEpochSecondsNow()
-  chrome.storage.local.set(storageObj)
+  chrome.storage.sync.set(storageObj)
 }
 
 export const getLatestFreeGamesFindingsData = async () => {
@@ -38,7 +39,7 @@ export const getLatestFreeGamesFindingsData = async () => {
   const response = await fetch('https://www.reddit.com/r/FreeGameFindings/new.json?limit=50');
   let newGamesCount = 0
 
-  const lastClaimedDateSinceEpoch = await chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
+  const lastClaimedDateSinceEpoch = await chrome.storage.sync.get([lastClaimedDateStorageKey]).then((result) => {
     return result.lastClaimedEpochSecs
   });
 
@@ -77,7 +78,7 @@ export const getLatestFreeGamesFindingsData = async () => {
     updateLastRefreshedDate()
   })
 
-  return chrome.storage.local.set({ freeGamesData: response })
+  return chrome.storage.sync.set({ freeGamesData: response })
 };
 
 const ALARM_NAME = 'newgame';

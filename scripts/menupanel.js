@@ -10,7 +10,7 @@ function dateToLocale(date){
 
 function updateLastClaimDateText () {
     let lastClaimedDateText = "-"
-    chrome.storage.local.get([lastClaimedDateStorageKey]).then((result) => {
+    chrome.storage.sync.get([lastClaimedDateStorageKey]).then((result) => {
         console.log("claimed", result)
 
         if (result.lastClaimedEpochSecs > 0) {
@@ -23,7 +23,7 @@ function updateLastClaimDateText () {
 
 function updateLastRefreshedDateText() {
     let lastRefreshedDateText = "-"
-    chrome.storage.local.get([lastRefreshedDateStorageKey]).then((result) => {
+    chrome.storage.sync.get([lastRefreshedDateStorageKey]).then((result) => {
         console.log("refresh", result)
         if (result.lastRefreshedEpochSecs > 0) {
             lastRefreshedDateText = dateToLocale(epochSecsToDate(result.lastRefreshedEpochSecs));
@@ -34,7 +34,7 @@ function updateLastRefreshedDateText() {
 }
 
 document.querySelector("#claimedButton").addEventListener("click", ()=>{
-    chrome.storage.local.get([lastClaimedDateStorageKey]).then(() => {
+    chrome.storage.sync.get([lastClaimedDateStorageKey]).then(() => {
         updateLastClaimedDate()
     }).then(()=>{
         updateLastClaimDateText()
@@ -53,7 +53,7 @@ document.querySelector("#refreshButton").addEventListener("click", ()=>{
     })
 })
 
-document.querySelector('#go-to-options').addEventListener('click', function() {
+document.querySelector('#settingsButton').addEventListener('click', function() {
     if (chrome.runtime.openOptionsPage) {
       chrome.runtime.openOptionsPage();
     } else {
