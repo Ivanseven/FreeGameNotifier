@@ -4,9 +4,10 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
     // Save to browser storage
     chrome.storage.sync.set({
       lastClaimedEpochSecs: 0,
-      lastRefreshedEpochSecs: 0
+      lastRefreshedEpochSecs: 0,
+      includedPlatforms: "*",
+      excludedPlatforms: "",
     });
-
   }
 });
 
@@ -43,21 +44,59 @@ export const getLatestFreeGamesFindingsData = async () => {
     return result.lastClaimedEpochSecs
   });
 
+  const includedPlatforms = await chrome.storage.sync.get("includedPlatforms").then((data)=>{
+    if (data.includedPlatforms !== "*") {
+      let platforms = data.includedPlatforms.toLowerCase().replace(/\s/g, '')
+      platforms.indexOf('/') !== -1 ? platforms.split('/') : platforms
+      return platforms
+    }
+    return data.includedPlatforms
+  })
+
+  const excludedPlatforms = await chrome.storage.sync.get(["excludedPlatforms"]).then((data)=>{
+    if (data.excludedPlatforms === "") return []
+
+    let platforms = data.excludedPlatforms.toLowerCase().replace(/\s/g, '')
+    platforms.indexOf('/') !== -1 ? platforms.split('/') : platforms
+    return platforms
+  })
 
   response.json().then((json)=>{
     let entries = json.data.children
     entries = entries.filter((item)=>{
-      // Filter out old/expired/etc games
+      // Check for games after last claimed date & apply filters
       if (lastClaimedDateSinceEpoch < item.data.created_utc) {
-        const includeGame = item.data.link_flair_text != "Expired"
-        if (includeGame) {
-          newGamesCount += 1
-         return includeGame
+
+        if (item.data.link_flair_text === "Expired") {
+          return false
         }
+
+        const postTitle = item.data.title.toLowerCase()
+        const platformEndBracketPos = postTitle.indexOf("]");
+        const hasPlatformList = platformEndBracketPos !== -1 // No platform list found! Eg: [Steam / Epic / Origin]
+        const platformList = hasPlatformList ? postTitle.slice(1, platformEndBracketPos).replace(/\s/g, '').split(",") : []
+
+        if (hasPlatformList) {
+          if (includedPlatforms === "*" || 
+            includedPlatforms.some(platform=> platformList.includes(platform.toLowerCase()))
+          ) {
+            newGamesCount += 1
+            return true
+          }
+        }
+
+        if (excludedPlatforms.some(platform=> platformList.includes(platform.toLowerCase()))) {
+          return false
+        }
+
+        // Include everything else
+        // Eg: improper/irregular formatted posts
+        newGamesCount += 1
+        return true
       }
+
     })
    
-
     // for (let entry of entries) {
       // const d = new Date(0); // Sets the date to the epoch
       // d.setUTCSeconds(entry.data.created_utc);
