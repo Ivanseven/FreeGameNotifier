@@ -47,7 +47,7 @@ export const getLatestFreeGamesFindingsData = async () => {
   const includedPlatforms = await chrome.storage.sync.get("includedPlatforms").then((data)=>{
     if (data.includedPlatforms !== "*") {
       let platforms = data.includedPlatforms.toLowerCase().replace(/\s/g, '')
-      platforms.indexOf('/') !== -1 ? platforms.split('/') : platforms
+      platforms = platforms.indexOf('/') !== -1 ? platforms.split('/') : [platforms]
       return platforms
     }
     return data.includedPlatforms
@@ -57,7 +57,7 @@ export const getLatestFreeGamesFindingsData = async () => {
     if (data.excludedPlatforms === "") return []
 
     let platforms = data.excludedPlatforms.toLowerCase().replace(/\s/g, '')
-    platforms.indexOf('/') !== -1 ? platforms.split('/') : platforms
+    platforms = platforms.indexOf('/') !== -1 ? platforms.split('/') : [platforms]
     return platforms
   })
 
