@@ -70,6 +70,7 @@ export const getLatestFreeGamesFindingsData = async () => {
         if (item.data.link_flair_text === "Expired") {
           return false
         }
+        let includeGame = true
 
         const postTitle = item.data.title.toLowerCase()
         const platformEndBracketPos = postTitle.indexOf("]");
@@ -80,19 +81,19 @@ export const getLatestFreeGamesFindingsData = async () => {
           if (includedPlatforms === "*" || 
             includedPlatforms.some(platform=> platformList.includes(platform.toLowerCase()))
           ) {
-            newGamesCount += 1
-            return true
+            includeGame = true
           }
         }
 
         if (excludedPlatforms.some(platform=> platformList.includes(platform.toLowerCase()))) {
-          return false
+          includeGame = false
         }
 
-        // Include everything else
-        // Eg: improper/irregular formatted posts
-        newGamesCount += 1
-        return true
+        if (includeGame){
+          newGamesCount += 1
+          return includeGame
+        }
+        return false
       }
 
     })
