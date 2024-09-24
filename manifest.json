@@ -3,6 +3,12 @@
   "name": "Free Games Notification",
   "description": "An unofficial extension to check updates from reddit.com/r/FreeGameFindings",
   "version": "1.0",
+  "icons": {
+    "16": "./icons/free-games-icon.png",
+    "32": "./icons/free-games-icon.png",
+    "48": "./icons/free-games-icon.png",
+    "128": "./icons/free-games-icon.png"
+  },
   "action": {
     "default_popup": "./pages/menupanel.html",
     "default_icon": "./icons/free-games-icon.png"
