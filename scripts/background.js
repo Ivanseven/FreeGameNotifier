@@ -1,3 +1,5 @@
+import { FilterModeOptions } from "./constants.js"
+
 // On extension install, set storage
 chrome.runtime.onInstalled.addListener(({ reason }) => {
   if (reason === 'install') {
@@ -5,8 +7,8 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
     chrome.storage.sync.set({
       lastClaimedEpochSecs: 0,
       lastRefreshedEpochSecs: 0,
-      includedPlatforms: "*",
       excludedPlatforms: "",
+      filterMode: FilterModeOptions.INCLUDE
     });
   }
 });
@@ -44,13 +46,8 @@ export const getLatestFreeGamesFindingsData = async () => {
     return result.lastClaimedEpochSecs
   });
 
-  const includedPlatforms = await chrome.storage.sync.get("includedPlatforms").then((data)=>{
-    if (data.includedPlatforms !== "*") {
-      let platforms = data.includedPlatforms.toLowerCase().replace(/\s/g, '')
-      platforms = platforms.indexOf('/') !== -1 ? platforms.split('/') : [platforms]
-      return platforms
-    }
-    return data.includedPlatforms
+  const filterMode = await chrome.storage.sync.get(["filterMode"]).then((data)=>{
+    return data.filterMode
   })
 
   const excludedPlatforms = await chrome.storage.sync.get(["excludedPlatforms"]).then((data)=>{
@@ -70,39 +67,33 @@ export const getLatestFreeGamesFindingsData = async () => {
         if (item.data.link_flair_text === "Expired") {
           return false
         }
-        let includeGame = true
+
+        const includeAll = filterMode ===  FilterModeOptions.INCLUDE
+        let includeGame = includeAll
 
         const postTitle = item.data.title.toLowerCase()
         const platformEndBracketPos = postTitle.indexOf("]");
-        const hasPlatformList = platformEndBracketPos !== -1 // No platform list found! Eg: [Steam / Epic / Origin]
-        const platformList = hasPlatformList ? postTitle.slice(1, platformEndBracketPos).replace(/\s/g, '').split(",") : []
-
+        const hasPlatformList = platformEndBracketPos !== -1 // No platform list found! Platform list should look like: [Steam / Epic / Origin]
+        const platformList = hasPlatformList ? postTitle.slice(1, platformEndBracketPos)
+          .replace(/\s/g, '') // Remove whitespace to standardize names
+          .replaceAll(",","/") // Handle if comma is platform separator
+          .split("/") : []
+        
         if (hasPlatformList) {
-          if (includedPlatforms === "*" || 
-            includedPlatforms.some(platform=> platformList.includes(platform.toLowerCase()))
-          ) {
-            includeGame = true
+          if (excludedPlatforms.some(platform=> platformList.includes(platform.toLowerCase())))
+          {
+            // Exclude game if we are including all
+            includeGame = !includeAll
           }
-        }
-
-        if (excludedPlatforms.some(platform=> platformList.includes(platform.toLowerCase()))) {
-          includeGame = false
         }
 
         if (includeGame){
           newGamesCount += 1
           return includeGame
         }
-        return false
       }
 
     })
-   
-    // for (let entry of entries) {
-      // const d = new Date(0); // Sets the date to the epoch
-      // d.setUTCSeconds(entry.data.created_utc);
-      // To debug entry date
-    // }
 
     if (newGamesCount > 0) {
       chrome.action.setBadgeBackgroundColor({color: 'green'})
@@ -140,13 +131,3 @@ createNewGameAlarm();
 
 // Update games on alarm
 chrome.alarms.onAlarm.addListener(getLatestFreeGamesFindingsData);
-
-// Watch storage changes:
-// chrome.storage.onChanged.addListener((changes, namespace) => {
-//   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-//     console.log(
-//       `Storage key "${key}" in namespace "${namespace}" changed.`,
-//       `Old value was "${oldValue}", new value is "${newValue}".`
-//     );
-//   }
-// });

@@ -12,15 +12,28 @@
         gap: 0.2rem;
       "
     >
-      <label for="includedPlatforms">Platforms to include</label>
-      <input type="text" id="includedPlatforms" />
-      <label for="excludedPlatforms">Platforms to exclude</label>
+    <div>
+      <input
+        type="radio"
+        id="filterInclude"
+        name="filterMode"
+        value="include"
+      />
+      <label for="filterInclude">Include All</label><br />
+      <input
+        type="radio"
+        id="filterExclude"
+        name="filterMode"
+        value="exclude"
+      />
+      <label for="filterExclude">Exclude All</label><br />
+      <label for="excludedPlatforms">Except for platforms: </label>
       <input type="text" id="excludedPlatforms" />
     </div>
 
     <div id="status"></div>
     <button id="save">Save</button>
 
-    <script src="../scripts/settings.js"></script>
+    <script type="module" src="../scripts/settings.js"></script>
   </body>
 </html>

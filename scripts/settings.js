@@ -1,17 +1,19 @@
+import { FilterModeOptions } from "./constants.js"
+
 // Saves options to chrome.storage
 const saveOptions = () => {
-    const includedPlatforms = document.getElementById('includedPlatforms').value.replaceAll(",","/");
+    const filterMode = document.querySelector('input[name="filterMode"]:checked').value;
     const excludedPlatforms = document.getElementById('excludedPlatforms').value.replaceAll(",","/");
     
     chrome.storage.sync.set(
-      { includedPlatforms: includedPlatforms, excludedPlatforms: excludedPlatforms },
+      { filterMode: filterMode, excludedPlatforms: excludedPlatforms },
       () => {
         // Update status to let user know options were saved.
         const status = document.getElementById('status');
-        status.textContent = "Options saved." // `Options saved. ${includedPlatforms} --- ${excludedPlatforms}`;
+        status.textContent = `Options saved. We will ${filterMode} all games${excludedPlatforms ? " except for: " +excludedPlatforms : '.' }`;
         setTimeout(() => {
           status.textContent = '';
-        }, 750);
+        }, 5000);
       }
     );
   };
@@ -20,9 +22,15 @@ const saveOptions = () => {
   // stored in chrome.storage.
   const restoreOptions = () => {
     chrome.storage.sync.get(
-      { includedPlatforms: "*", excludedPlatforms: "" },
+      { filterMode: "include", excludedPlatforms: "" },
       (items) => {
-        document.getElementById('includedPlatforms').value = items.includedPlatforms;
+
+        if (items.filterMode === FilterModeOptions.INCLUDE) {
+            document.getElementById('filterInclude').checked = true
+        } else {
+            document.getElementById('filterExclude').checked = true
+        }
+
         document.getElementById('excludedPlatforms').value = items.excludedPlatforms;
       }
     );
