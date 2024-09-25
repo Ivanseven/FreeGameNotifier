@@ -2,26 +2,20 @@
 
 Ordered by priority
 
-- hide GMT?
-
 - Show difference of last claimed date vs now, with colored text based on age
   eg: (1 hour ago, 2 weeks ago )
 
-- Last Update Date
+- hide GMT?
+
+- claim dates history
+
+- undo claim button
 
 - Epic Games Quick Link
 
 - Check if already Steam game already owned? Needs access to steam library, possible.
 
 - game logos via steam! wait via reddit!!!
-
-- Settings page to specify tags to include
-
-- Filters for certain tags
-
-- claim dates history
-
-- undo claim button
 
 - Testing
   https://developer.chrome.com/docs/extensions/how-to/test/unit-testing
