@@ -4,29 +4,54 @@
 
 ## About
 
-This project is an unofficial extension to check updates from reddit.com/r/FreeGameFindings, following Chrome Extension Manifest v3.
+This project is an unofficial extension to check updates from [reddit.com/r/FreeGameFindings](https://www.reddit.com/r/FreeGameFindings)
 
-This extension upon installation will query the 50 newest game entries from `https://www.reddit.com/r/FreeGameFindings`
-
-It will then filter out the expired games and games based on the last claimed date, updated by pressing the claimed button.
-
-It utilizes Chrome Extension APIs:
+It utilizes the following Chrome Extension permissions:
 
 - `Alarm`, to check for updates periodically
-- `Storage`, to save and retrieve the last claimed date
+- `Storage`, to save settings & last claimed & refreshed dates
 
-#### Usage
+# Installation
 
-After installing the extension, you may wait for the extension to notify you of the latest games
+1. Enable Developer Mode on Chrome:
+
+   - Open this [link](chrome://extensions/) OR Go to Menu > More tools > Extensions in Chrome.
+   - Toggle on Developer mode (top-right corner).
+
+2. Load the Extension:
+
+   - Click Load unpacked.
+   - Select the folder containing your extension’s manifest.json file.
+
+# Usage
+
+This extension notifies you of the number of new posts (excluding expired) since your last claimed date via the extension badge.
+
+When you have checked the latest updates from Reddit, click the `claimed` button to update the last claimed date.
+
+Currently, the extension retrieves updates every 2 hours.
+
+To retrieve the latest updates manually, press the `refresh` button.
+
+### Filter Setting
+
+To filter multiple platforms, separate each platform with a comma like so:
+
+Eg: `Xbox,Playstation,PSA`
+
+You may choose to either:
+
+- Include all games except for the specified platforms
+
+  Excluding `xbox` platforms will exclude posts which only have the `xbox` platform.
+
+  We include posts if they include other tags(Eg: `PC / Xbox`) to avoid missing out on updates. To exclude those posts as well, exclude all platforms in those posts.
+
+- Exclude all games except for the specified platforms
+  Including `steam` platform will only include posts if they have `steam` in their platforms title.
 
 # Credits
 
 - Google Fonts Icons, https://fonts.google.com/icons
 
 - FreeGameFindings Reddit Community & Logo, https://www.reddit.com/r/FreeGameFindings/
-
-### Pending Features Credits:
-
-- Redditor MeguminShiro for giving us instant claim links, https://www.reddit.com/user/MeguminShiro/
-
-- Valve Corporation for their Steam platform API to query for user owned games.
