@@ -3,7 +3,7 @@ import { FilterModeOptions } from "./constants.js"
 // Saves options to chrome.storage
 const saveOptions = () => {
     const filterMode = document.querySelector('input[name="filterMode"]:checked').value;
-    const excludedPlatforms = document.getElementById('excludedPlatforms').value.replaceAll(",","/");
+    const excludedPlatforms = document.getElementById('excludedPlatforms').value.replace(/\s/g, '').replaceAll("/",",");
     
     chrome.storage.sync.set(
       { filterMode: filterMode, excludedPlatforms: excludedPlatforms },

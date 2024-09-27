@@ -67,7 +67,7 @@ export const getLatestFreeGamesFindingsData = async () => {
     if (data.excludedPlatforms === "") return []
 
     let platforms = data.excludedPlatforms.toLowerCase().replace(/\s/g, '')
-    platforms = platforms.indexOf('/') !== -1 ? platforms.split('/') : [platforms]
+    platforms = platforms.indexOf(',') !== -1 ? platforms.split(',') : [platforms]
     return platforms
   })
 
