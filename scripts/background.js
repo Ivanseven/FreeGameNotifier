@@ -37,6 +37,19 @@ const updateLastRefreshedDate = () => {
   chrome.storage.sync.set(storageObj)
 }
 
+  const verifyGameInclusion = (platformList, excludedPlatforms, includeAll) => {
+    // Exclude game ONLY if it does not have other tags
+    // Eg: Steam / Xbox / Playstation
+    // Excluding Xbox should not exclude this post because it includes Steam/Playstation
+    const result = platformList.some(
+      (platform) => {
+        return includeAll ? !(excludedPlatforms.includes(platform)) : excludedPlatforms.includes(platform)
+      }
+    )
+
+    return result
+  }
+
 export const getLatestFreeGamesFindingsData = async () => {
   // https://www.reddit.com/r/FreeGameFindings/new.json?limit=none
   const response = await fetch('https://www.reddit.com/r/FreeGameFindings/new.json?limit=50');
@@ -75,16 +88,13 @@ export const getLatestFreeGamesFindingsData = async () => {
         const platformEndBracketPos = postTitle.indexOf("]");
         const hasPlatformList = platformEndBracketPos !== -1 // No platform list found! Platform list should look like: [Steam / Epic / Origin]
         const platformList = hasPlatformList ? postTitle.slice(1, platformEndBracketPos)
+          .toLowerCase()
           .replace(/\s/g, '') // Remove whitespace to standardize names
           .replaceAll(",","/") // Handle if comma is platform separator
           .split("/") : []
         
         if (hasPlatformList) {
-          if (excludedPlatforms.some(platform=> platformList.includes(platform.toLowerCase())))
-          {
-            // Exclude game if we are including all
-            includeGame = !includeAll
-          }
+            includeGame = verifyGameInclusion(platformList, excludedPlatforms, includeAll)
         }
 
         if (includeGame){
