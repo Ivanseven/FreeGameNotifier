@@ -32,9 +32,13 @@
   margin-bottom: 0.3rem;
   /* Fix Button clickable zone was bigger than button */
   /* margin: 1rem 2rem; */
-  background-color: orangered;
+  background-color: tomato;
   color: white;    
   /*width: min-content*/
+}
+
+.list-item:hover {
+  background-color: orangered;
 }
 
 .list-item span {
