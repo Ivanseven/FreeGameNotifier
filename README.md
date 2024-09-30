@@ -15,25 +15,33 @@ It utilizes the following Chrome Extension permissions:
 
 1. Enable Developer Mode on Chrome:
 
-   - Open this [link](chrome://extensions/) OR Go to Menu > More tools > Extensions in Chrome.
-   - Toggle on Developer mode (top-right corner).
+   - Open this [link](chrome://extensions/) or navigate to Menu > More Tools > Extensions in Chrome.
+   - Toggle on Developer Mode in the top-right corner.
 
 2. Load the Extension:
 
-   - Click Load unpacked.
+   - Click on `Load unpacked`
    - Select the folder containing your extension’s manifest.json file.
 
 # Usage
 
 This extension notifies you of the number of new posts (excluding expired) since your last claimed date via the extension badge.
 
-When you have checked the latest updates from Reddit, click the `claimed` button to update the last claimed date.
-
 Currently, the extension retrieves updates every 2 hours.
-
 To retrieve the latest updates manually, press the `refresh` button.
 
-### Filter Setting
+### WorkFlow
+
+1. **Open Free Game Findings**  
+   Click the Reddit button to open [reddit.com/r/FreeGameFindings](https://www.reddit.com/r/FreeGameFindings) in a new tab.
+
+2. **Check and Claim Your Games**  
+   Review the available games and claim any that interest you.
+
+3. **Update Your Claim Status**  
+   After you’ve finished checking and claiming, click the **Claimed** button to record the date of your last claim.
+
+### Notification Filter Setting
 
 To filter multiple platforms, separate each platform with a comma like so:
 
@@ -41,14 +49,15 @@ Eg: `Xbox,Playstation,PSA`
 
 You may choose to either:
 
-- Include all games except for the specified platforms
+- ### Include All Games Except Specified Platforms
 
-  Excluding `xbox` platforms will exclude posts which only have the `xbox` platform.
+  By using a filter such as `xbox`, you will exclude posts that are only tagged with the `xbox` platform.
 
-  We include posts if they include other tags(Eg: `PC / Xbox`) to avoid missing out on updates. To exclude those posts as well, exclude all platforms in those posts.
+  However, posts that include other platforms (e.g., `PC / Xbox` ) will still be included to ensure you don't miss important updates. To completely exclude such posts, you’ll need to filter out all relevant platforms.
 
-- Exclude all games except for the specified platforms
-  Including `steam` platform will only include posts if they have `steam` in their platforms title.
+- ### Exclude All Games Except Specified Platforms
+
+  Using a filter like `steam` will limit the notifications to only those posts that are tagged with the `steam` platform.
 
 # Credits
 
