@@ -23,15 +23,12 @@ const getEpochSecondsNow = () => {
 }
 
 export const updateLastClaimedDate = () => {
-  // const now = new Date().toUTCString() // Storage can't seem to store Date
   const storageObj = {}
   storageObj[lastClaimedDateStorageKey] = getEpochSecondsNow()
   chrome.storage.sync.set(storageObj)
 }
 
 const updateLastRefreshedDate = () => {
-  // const now = new Date().toUTCString() // Storage can't seem to store Date
-  // Wait store the epochSeconds instead! It's easier on the background, convert it in the frontend
   const storageObj = {}
   storageObj[lastRefreshedDateStorageKey] = getEpochSecondsNow()
   chrome.storage.sync.set(storageObj)
@@ -46,12 +43,12 @@ const updateLastRefreshedDate = () => {
         return includeAll ? !(excludedPlatforms.includes(platform)) : excludedPlatforms.includes(platform)
       }
     )
-
+    
+    // console.debug(result ? "✅" : "", "GAME", platformList, excludedPlatforms)
     return result
   }
 
 export const getLatestFreeGamesFindingsData = async () => {
-  // https://www.reddit.com/r/FreeGameFindings/new.json?limit=none
   const response = await fetch('https://www.reddit.com/r/FreeGameFindings/new.json?limit=50');
   let newGamesCount = 0
 

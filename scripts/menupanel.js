@@ -11,8 +11,6 @@ function dateToLocale(date){
 function updateLastClaimDateText () {
     let lastClaimedDateText = "-"
     chrome.storage.sync.get([lastClaimedDateStorageKey]).then((result) => {
-        console.log("claimed", result)
-
         if (result.lastClaimedEpochSecs > 0) {
             lastClaimedDateText = dateToLocale(epochSecsToDate(result.lastClaimedEpochSecs));
         }
@@ -24,7 +22,6 @@ function updateLastClaimDateText () {
 function updateLastRefreshedDateText() {
     let lastRefreshedDateText = "-"
     chrome.storage.sync.get([lastRefreshedDateStorageKey]).then((result) => {
-        console.log("refresh", result)
         if (result.lastRefreshedEpochSecs > 0) {
             lastRefreshedDateText = dateToLocale(epochSecsToDate(result.lastRefreshedEpochSecs));
         }

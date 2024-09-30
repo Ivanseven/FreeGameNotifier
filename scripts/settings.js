@@ -18,8 +18,7 @@ const saveOptions = () => {
     );
   };
   
-  // Restores select box and checkbox state using the preferences
-  // stored in chrome.storage.
+  // Restores options using the preferences stored in chrome.storage.
   const restoreOptions = () => {
     chrome.storage.sync.get(
       { filterMode: "include", excludedPlatforms: "" },
