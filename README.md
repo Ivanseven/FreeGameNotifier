@@ -43,6 +43,8 @@ To retrieve the latest updates manually, press the `refresh` button.
 
 ### Notification Filter Setting
 
+![settings image](./docs/settings.png "Settings Page")
+
 To filter multiple platforms, separate each platform with a comma like so:
 
 Eg: `Xbox,Playstation,PSA`
