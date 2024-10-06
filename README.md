@@ -1,15 +1,13 @@
-# Free Games Notification Extension
+# FreeGameNotifier
 
-#### Video Demo: <URL HERE>
-
-## About
-
-This project is an unofficial extension to check updates from [reddit.com/r/FreeGameFindings](https://www.reddit.com/r/FreeGameFindings)
+This project is an unofficial chrome extension to check updates from [reddit.com/r/FreeGameFindings](https://www.reddit.com/r/FreeGameFindings)
 
 It utilizes the following Chrome Extension permissions:
 
 - `Alarm`, to check for updates periodically
 - `Storage`, to save settings & last claimed & refreshed dates
+
+#### Video Demo: <URL HERE>
 
 # Installation
 
