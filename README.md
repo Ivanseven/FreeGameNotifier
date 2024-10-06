@@ -43,7 +43,7 @@ To retrieve the latest updates manually, press the `refresh` button.
 
 ### Notification Filter Setting
 
-![settings image](./docs/settings.png "Settings Page")
+<img src="./docs/settings.png" alt="settings" width="400"/>
 
 To filter multiple platforms, separate each platform with a comma like so:
 
