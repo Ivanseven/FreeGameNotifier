@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>My Test Extension Options</title>
+    <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
     <div
@@ -13,23 +14,56 @@
       "
     >
     <div>
+      <h2>Notification Filter</h2>
       <input
         type="radio"
         id="filterInclude"
         name="filterMode"
         value="include"
       />
-      <label for="filterInclude">Include All</label><br />
+      <label for="filterInclude">Include all platforms</label><br />
       <input
         type="radio"
         id="filterExclude"
         name="filterMode"
         value="exclude"
       />
-      <label for="filterExclude">Exclude All</label><br />
-      <label for="excludedPlatforms">Except for platforms: </label>
-      <br />
+      <label for="filterExclude">Exclude all platforms</label><br />
+      <div style="padding-top:0.5rem; padding-bottom: 0.5rem;">    
+        <label for="excludedPlatforms">Except for platforms: </label>
+      </div>
+
       <textarea type="textarea" id="excludedPlatforms" style="width:100%" rows="6" placeholder="Eg: Steam,Xbox,PS"></textarea>
+    </div>
+
+    <h2 class="y-margin-sm">Post Types To Include</h2>
+    <p class="y-margin-sm">PSA tags do not have a Post Type, and therefore will included by default.</p>
+    <p class="y-margin-sm">To exclude PSA tags, add it in the Notification Filter exclusion instead.</p>
+
+    <div>
+      <input type="checkbox" id="postTypeGame" name="postTypeGame">
+      <label for="postTypeGame">Games</label>
+    </div>
+    <div>
+      <input type="checkbox" id="postTypeDLC" name="postTypeDLC">
+      <label for="postTypeDLC">DLCs</label>
+    </div>
+    <div>
+      <input type="checkbox" id="postTypeMembership" name="postTypeMembership">
+      <label for="postTypeMembership">Memberships</label>
+    </div>
+    <div>
+      <input type="checkbox" id="postTypeCredits" name="postTypeCredits">
+      <label for="postTypeCredits">Game Credits</label>
+    </div>
+    <div>
+      <input type="checkbox" id="postTypePreRelease" name="postTypePreRelease">
+      <label for="postTypePreRelease">Alpha/Beta releases</label>
+    </div>
+
+    <div>
+      <input type="checkbox" id="postTypeOthers" name="postTypeOthers">
+      <label for="postTypeOthers">Others (Usually in-game items)</label>
     </div>
 
     <div id="status"></div>

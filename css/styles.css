@@ -45,6 +45,11 @@
   line-height: 1rem;
 }
 
+.y-margin-sm {
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
