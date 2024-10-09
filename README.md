@@ -82,7 +82,8 @@ Our above rules exclude and remove a lot of content from being posted on FGF, bu
 </details>
 
 <br>
-While, PSA can mean many things, in the past, the `PSA` tag refers to:
+
+While, `PSA` can mean many things, in the past, the `PSA` tag refers to:
 
 - **Games that will be free on a future date**
 
