@@ -1,4 +1,5 @@
-import { FilterModeOptions } from "./constants.js"
+import { FilterModeOptions, DefaultPostTypes } from "./constants.js"
+import { PostType } from "./constants.js";
 
 // On extension install, set storage
 chrome.runtime.onInstalled.addListener(({ reason }) => {
@@ -8,7 +9,8 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
       lastClaimedEpochSecs: 0,
       lastRefreshedEpochSecs: 0,
       excludedPlatforms: "",
-      filterMode: FilterModeOptions.INCLUDE
+      filterMode: FilterModeOptions.INCLUDE,
+      includedPostTypes: DefaultPostTypes
     });
   }
 });
@@ -34,19 +36,32 @@ const updateLastRefreshedDate = () => {
   chrome.storage.sync.set(storageObj)
 }
 
-  const verifyGameInclusion = (platformList, excludedPlatforms, includeAll) => {
-    // Exclude game ONLY if it does not have other tags
-    // Eg: Steam / Xbox / Playstation
-    // Excluding Xbox should not exclude this post because it includes Steam/Playstation
-    const result = platformList.some(
-      (platform) => {
-        return includeAll ? !(excludedPlatforms.includes(platform)) : excludedPlatforms.includes(platform)
-      }
-    )
-    
-    // console.debug(result ? "✅" : "", "GAME", platformList, excludedPlatforms)
-    return result
+const verifyPlatformInclusion = (platformList, excludedPlatforms, includeAll) => {
+  // Exclude game ONLY if it does not have other tags
+  // Eg: Steam / Xbox / Playstation
+  // Excluding Xbox should not exclude this post because it includes Steam/Playstation
+  const result = platformList.some(
+    (platform) => {
+      return includeAll ? !(excludedPlatforms.includes(platform)) : excludedPlatforms.includes(platform)
+    }
+  )
+  
+  // console.debug(result ? "✅" : "", "GAME", platformList, excludedPlatforms)
+  return result
+}
+
+const verifyPostTypeInclusion = (postType, includedPostTypes) => {
+  postType = postType.toLowerCase()
+
+  let settingType
+  if (PostType[postType]) {
+    settingType = PostType[postType]
+  } else {
+    settingType = "others"
   }
+
+  return includedPostTypes[settingType]
+}
 
 export const getLatestFreeGamesFindingsData = async () => {
   const response = await fetch('https://www.reddit.com/r/FreeGameFindings/new.json?limit=50');
@@ -68,6 +83,10 @@ export const getLatestFreeGamesFindingsData = async () => {
     return platforms
   })
 
+  const includedPostTypes = await chrome.storage.sync.get(["includedPostTypes"]).then((data)=>{
+    return data.includedPostTypes
+  })
+
   response.json().then((json)=>{
     let entries = json.data.children
     entries = entries.filter((item)=>{
@@ -79,7 +98,7 @@ export const getLatestFreeGamesFindingsData = async () => {
         }
 
         const includeAll = filterMode ===  FilterModeOptions.INCLUDE
-        let includeGame = includeAll
+        let includePost = includeAll
 
         const postTitle = item.data.title.toLowerCase()
         const platformEndBracketPos = postTitle.indexOf("]");
@@ -91,12 +110,24 @@ export const getLatestFreeGamesFindingsData = async () => {
           .split("/") : []
         
         if (hasPlatformList) {
-            includeGame = verifyGameInclusion(platformList, excludedPlatforms, includeAll)
+            includePost = verifyPlatformInclusion(platformList, excludedPlatforms, includeAll)
         }
 
-        if (includeGame){
+          // PSA posts do not have PostType
+        if (hasPlatformList && !platformList.includes("psa")) {
+          let postTypeStartBracketPos = postTitle.indexOf("(")
+          let postTypeEndBracketPos = postTitle.indexOf(")")
+          if (postTypeStartBracketPos !== -1 && postTypeEndBracketPos !== -1) {
+            const postType = postTitle.slice(postTypeStartBracketPos + 1, postTypeEndBracketPos)
+            includePost = verifyPostTypeInclusion(postType, includedPostTypes)
+          }
+        }
+
+        if (includePost){
+          // console.log("Included Game", postTitle)
+          // The "Exiled Giveaways and Itch.io Mega Threads" post flags as a new post too
           newGamesCount += 1
-          return includeGame
+          return includePost
         }
       }
 
