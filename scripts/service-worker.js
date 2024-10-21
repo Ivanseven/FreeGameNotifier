@@ -1,1 +1,1 @@
-import './background.js';
+import "./background.js"
