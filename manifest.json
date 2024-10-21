@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Free Games Notification",
+  "name": "Free Game Notifier",
   "description": "An unofficial extension to check updates from reddit.com/r/FreeGameFindings",
   "version": "1.0",
   "icons": {
