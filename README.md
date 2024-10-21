@@ -46,6 +46,19 @@ To retrieve the latest updates manually, press the `refresh` button.
 
 <img src="./docs/settings.png" alt="settings" width="400"/>
 
+<br>
+In the Notification Filter, you may filter through platforms.
+
+The **Platform** is the first section in the Reddit post title listed in square brackets.
+
+For example:
+
+`Epic Games` is the **Platform** in this post title:
+
+<img src="./docs/postSample.png" alt="settings" width="400"/>
+<br>
+<br>
+
 To filter multiple platforms, separate each platform with a comma like so:
 
 Eg: `Xbox,Playstation,PS`
@@ -102,9 +115,35 @@ While, `PSA` can mean many things, in the past, the `PSA` tag refers to:
 
 <br>
 
+## Post Type Settings
+
+The **Post Type** is the second section in the Reddit post title listed in round brackets.
+
+For example:
+
+`Game` is the **Post Type** in the following post:
+
+<img src="./docs/postSample.png" alt="settings" width="400"/>
+<br>
+<br>
+
+These are the following Post Types we check for:
+- Games
+- DLCs
+- Memberships
+- Game Credits
+- Alpha/Beta releases
+- Others (Usually in-game items & everything else )
+
+If there is no platform tag in a post title, we also categorize it as `Others`
+
+> Exiled Giveaways and Itch.io Mega Threads
+
 # Technical Details
 
 On installation, we call `createNewGameAlarm` to create an recurring alarm to retrieve updates periodically from the subreddit.
+
+Our main logic resides in `scripts/background/getLatestFreeGamesFindingsData`, in which we will fetch the latest game updates & filter through them according to the filter settings.
 
 # File Structure
 
@@ -114,35 +153,12 @@ On installation, we call `createNewGameAlarm` to create an recurring alarm to re
 - **/pages** - HTML pages for the extension
 - **/scripts** - Our JS extension code
    - **background.js**, the main JS script running in the background
-   - **constants.js**, to store constants for filters & postType (planned)
+   - **constants.js**, to store constants for filters & postType
    - **menupanel.js**, to store code related to the extension menu
    - **service-worker.js**, to import background.js
    - **settings.js**, to store code related to the extension settings
    <!-- - **utils.js**, to store commonly re-used functions/data -->
    <!-- We can store the names of storageKeys here so they are easy to rename in the future, such as lastClaimedDateStorageKey -->
-
-
-# Design Decisions
-
-Using [crxjs](https://crxjs.dev/) to create the extension might be easier, but this helps me understand what [crxjs](https://crxjs.dev/) does behind the scenes.
-
-Keeping refresh & claim dates separately instead of a single object, allows us to get updates without affecting the claim status.
-
-Storing refresh & claim dates in Epoch Seconds, (lastClaimedEpochSecs, lastRefreshedEpochSecs)
-
-- Storing the date as epoch seconds instead of a date string makes it easier to compare, as Chrome storage objects can't store Dates objects.
-
-We lowercase all text & remove spaces before comparison to normalize the data. Epic Games will be able to match with Epic games, as both will be normalized to 'epicgames'
-
-We may need to add variations of a platform like:
-epic,epicgames, epicgame
-But user can add them in the filters for now
-
-
-There generally should be a new game every few days.. if not the extension is likely broken.
-
-It would be nice to automate more of the process, unfortunately it is a more tricky process
-
 
 # Credits
 
