@@ -36,6 +36,43 @@ const updateLastRefreshedDate = () => {
   chrome.storage.sync.set(storageObj)
 }
 
+const getPlatformList = (postTitle) => {
+  postTitle = postTitle.toLowerCase()
+  const platformStartBracketPos = postTitle.indexOf("[")
+  const platformEndBracketPos = postTitle.indexOf("]")
+
+  if (platformStartBracketPos === 0 && platformEndBracketPos !== -1) {
+    return postTitle
+      .slice(1, platformEndBracketPos)
+      .toLowerCase()
+      .replace(/\s/g, "") // Remove whitespace to standardize names
+      .replaceAll(",", "/") // Handle if comma is platform separator
+      .split("/")
+  } else {
+    // No platform list found!
+    // Platform list should look like: [Steam / Epic / Origin]; First character should be the starting bracket!
+    return []
+  }
+}
+
+const getPostType = (postTitle, platformList) => {
+  // PSA posts do not have PostType
+  if (platformList.includes("psa")) {
+    return undefined
+  }
+
+  let postTypeStartBracketPos = postTitle.indexOf("(")
+  let postTypeEndBracketPos = postTitle.indexOf(")")
+  if (postTypeStartBracketPos !== -1 && postTypeEndBracketPos !== -1) {
+    const postType = postTitle.slice(
+      postTypeStartBracketPos + 1,
+      postTypeEndBracketPos
+    )
+    return postType
+  }
+  return undefined
+}
+
 const verifyPlatformInclusion = (
   platformList,
   excludedPlatforms,
@@ -116,46 +153,34 @@ export const getLatestFreeGamesFindingsData = async () => {
           const includeAll = filterMode === FilterModeOptions.INCLUDE
           let includePost = includeAll
 
-          const postTitle = item.data.title.toLowerCase()
-          const platformEndBracketPos = postTitle.indexOf("]")
-          const hasPlatformList = platformEndBracketPos !== -1 // No platform list found! Platform list should look like: [Steam / Epic / Origin]
-          const platformList = hasPlatformList
-            ? postTitle
-                .slice(1, platformEndBracketPos)
-                .toLowerCase()
-                .replace(/\s/g, "") // Remove whitespace to standardize names
-                .replaceAll(",", "/") // Handle if comma is platform separator
-                .split("/")
-            : []
+          const postTitle = item.data.title
+          // First, check for Platform
+          let platformIncluded = true
+          let postTypeIncluded = true
+          const platformList = getPlatformList(postTitle)
 
-          if (hasPlatformList) {
-            includePost = verifyPlatformInclusion(
+          if (platformList === 0) {
+            // For posts without any tags at all, we categorize as Others
+            // Eg: Exiled Giveaways and Itch.io Mega Threads (#2)
+            includePost = verifyPostTypeInclusion(
+              PostType.other,
+              includedPostTypes
+            )
+          } else if (platformList.length > 0) {
+            platformIncluded = verifyPlatformInclusion(
               platformList,
               excludedPlatforms,
               includeAll
             )
-          }
 
-          // For posts without any tags at all, we categorize as Others
-          // Eg: Exiled Giveaways and Itch.io Mega Threads
-          if (!hasPlatformList) {
-            includePost = verifyPostTypeInclusion(PostType.other, includedPostTypes)
-          }
-
-          // PSA posts do not have PostType
-          if (hasPlatformList && !platformList.includes("psa")) {
-            let postTypeStartBracketPos = postTitle.indexOf("(")
-            let postTypeEndBracketPos = postTitle.indexOf(")")
-            if (
-              postTypeStartBracketPos !== -1 &&
-              postTypeEndBracketPos !== -1
-            ) {
-              const postType = postTitle.slice(
-                postTypeStartBracketPos + 1,
-                postTypeEndBracketPos
+            const postType = getPostType(postTitle, platformList)
+            if (postType) {
+              postTypeIncluded = verifyPostTypeInclusion(
+                postType,
+                includedPostTypes
               )
-              includePost = verifyPostTypeInclusion(postType, includedPostTypes)
             }
+            includePost = platformIncluded && postTypeIncluded
           }
 
           if (includePost) {
