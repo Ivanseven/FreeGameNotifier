@@ -136,6 +136,12 @@ export const getLatestFreeGamesFindingsData = async () => {
             )
           }
 
+          // For posts without any tags at all, we categorize as Others
+          // Eg: Exiled Giveaways and Itch.io Mega Threads
+          if (!hasPlatformList) {
+            includePost = verifyPostTypeInclusion(PostType.other, includedPostTypes)
+          }
+
           // PSA posts do not have PostType
           if (hasPlatformList && !platformList.includes("psa")) {
             let postTypeStartBracketPos = postTitle.indexOf("(")
