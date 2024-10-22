@@ -7,7 +7,9 @@ It utilizes the following Chrome Extension permissions:
 - `Alarm`, to check for updates periodically
 - `Storage`, to save settings & last claimed & refreshed dates
 
-#### Video Demo: <URL HERE>
+#### Video Demo:
+
+https://youtu.be/JRsM0-EOm5c
 
 # Installation
 
