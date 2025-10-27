@@ -2,6 +2,16 @@
 
 This project is an unofficial chrome extension to check updates from [reddit.com/r/FreeGameFindings](https://www.reddit.com/r/FreeGameFindings)
 
+**TLDR**, it's a number to keep track of how many new posts are there since the last time you checked in as `claimed`, so you know if there's a new game and how many posts/games to stay updated on.
+
+
+#### Preview:
+<img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/a33eaf80-7de0-4245-afe0-c0afcfea4261" />
+
+
+
+
+
 It utilizes the following Chrome Extension permissions:
 
 - `Alarm`, to check for updates periodically
