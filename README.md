@@ -1,3 +1,6 @@
+# Notifier not working currently.
+
+
 # FreeGameNotifier
 
 This project is an unofficial chrome extension to check updates from [reddit.com/r/FreeGameFindings](https://www.reddit.com/r/FreeGameFindings)
