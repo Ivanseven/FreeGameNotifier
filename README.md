@@ -1,4 +1,4 @@
-# Notifier not working currently.
+# Notifier not working currently as Reddit API was taken down
 
 
 # FreeGameNotifier
