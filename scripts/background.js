@@ -105,9 +105,22 @@ const verifyPostTypeInclusion = (postType, includedPostTypes) => {
 }
 
 export const getLatestFreeGamesFindingsData = async () => {
-  const response = await fetch(
-    "https://www.reddit.com/r/FreeGameFindings/new.json?limit=50"
-  )
+  let response
+  try {
+    response = await fetch(
+      "https://www.reddit.com/r/FreeGameFindings/new.json?limit=50"
+    )
+    if (!response.ok){
+      throw new Error("Failed to fetch!")
+    }
+
+  } catch (error) {
+    console.warn("Failed to fetch, error: ", error)
+    chrome.action.setBadgeBackgroundColor({ color: "white" })
+    chrome.action.setBadgeText({
+      text: `🚫`,
+    })
+  }
   let newGamesCount = 0
 
   const lastClaimedDateSinceEpoch = await chrome.storage.sync
